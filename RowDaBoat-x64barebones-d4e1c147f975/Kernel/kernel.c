@@ -135,11 +135,7 @@ int main()
 
 
 	//while (1);
-	for(int i = 0; i<1024; i++){
-		for(int j=0; j<768/2; j++){
-			writePixel(i,j);
-		}
-	}
+	writeWord("MICUS", 1);
 
 	return 0;
 }
