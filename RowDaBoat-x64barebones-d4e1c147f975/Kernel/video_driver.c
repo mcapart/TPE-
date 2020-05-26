@@ -179,9 +179,9 @@ int width = 1024/2-1;
 int widthAux = 1024;
 int HEIGHT = 768;
 static int actX = 0;
-static int actY= 0;
-static int actXaux=0;
-static int actYaux= 0;
+static int actY= 765-8*1.5;
+static int actXaux=1024/2 + 2;
+static int actYaux= 765-8*1.5 ;
 static double getMaxY = 0;
 static double currentSize;
 static double getMaxYaux = 0;
@@ -241,11 +241,16 @@ void writeChar(char c, int x, int y, double size, int color[3]){
 			}
 		}
 	}
+    if(actX == width){
+        actX = start;
+        scroll(1.5);
+    }
 
 }
 
 void newLine(){
-    actY += getMaxY * 8;
+    //actY += getMaxY * 8;
+    scroll(1.5);
     actX = start;
 }
 
@@ -259,12 +264,13 @@ void clear(){
 		}
 	}
     actX = start;
-    actY = 0;
+    //actY = 0;
     getMaxY = 0;
+    screenLine();
 }
 
 void deleteChar(){
-    for(int i = actX; i >= actX-8*currentSize && i > start; i--){
+    for(int i = actX; i >= actX-8*currentSize && i >= start; i--){
         for(int j=actY;j <= actY+8*currentSize;j++){
             char * pos = getPixelDataByPosition( i, j);
             pos[0] = 0; //azul
@@ -289,8 +295,24 @@ void deleteLine(){
         }
 		
 	}
-    actX=0;
+    actX=start;
 }
+
+void scroll(double size){
+    for(int i=start;i<width;i++){
+        for(int j=size*8;j<HEIGHT;j++){
+            char * pos = getPixelDataByPosition( i, j);
+            char * newPos = getPixelDataByPosition( i, j-8*size);
+            newPos[0] = pos[0];
+            newPos[1] = pos[1];
+            newPos[2] = pos[2];
+            pos[0] = 0;
+            pos[1] = 0;
+            pos[2] = 0;
+        }
+    }
+}
+
 
 void writeWord(char * c,double size, int color[3]){
 
@@ -300,7 +322,8 @@ void writeWord(char * c,double size, int color[3]){
 	for(int i = 0; c[i] != 0; i++){
 		if((actX + 8 * size) > width){
 			actX = start;
-			actY += 8 * getMaxY;
+			//actY += 8 * getMaxY;
+            scroll(size);
             getMaxY = size;
 
 		}
@@ -310,5 +333,6 @@ void writeWord(char * c,double size, int color[3]){
         }
 		actX += 8 * size;
 	}
+
     
 }

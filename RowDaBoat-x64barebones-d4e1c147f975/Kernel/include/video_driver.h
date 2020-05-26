@@ -19,4 +19,6 @@ void screenLine();
 
 void changeScreen();
 
+void scroll(double size);
+
 #endif

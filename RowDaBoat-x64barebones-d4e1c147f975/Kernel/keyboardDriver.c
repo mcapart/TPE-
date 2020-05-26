@@ -1,5 +1,5 @@
 #include <keyboardDriver.h>
-#include <naiveConsole.h>
+#include <video_driver.h>
 
 
 #define KEYS 59
@@ -20,20 +20,22 @@
 
 static uint8_t action(uint8_t scanCode);
 
-static const char pressCodes[KEYS][2] =
-    {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'}, {'4', '$'},
-    {'5', '%'}, {'6', '^'}, {'7', '&'}, {'8', '*'}, {'9', '('},
-    {'0', ')'}, {'-', '_'}, {'=', '+'}, {0, 0}, {0, 0}, {'q', 'Q'}, 
-    {'w', 'W'}, {'e', 'E'}, {'r', 'R'}, {'t', 'T'}, {'y', 'Y'}, 
-    {'u', 'U'}, {'i', 'I'}, {'o', 'O'}, {'p', 'P'}, {'[', '{'}, 
-    {']', '}'}, {0, 0}, {0, 0}, {'a', 'A'}, {'s', 'S'}, 
-    {'d', 'D'}, {'f', 'F'}, {'g', 'G'}, {'h', 'H'}, {'j', 'J'},
-    {'k', 'K'}, {'l', 'L'}, {';', ':'}, {'\'', '\"'}, {'`', '~'},
-    {0, 0}, {'\\', '|'}, {'z', 'Z'}, {'x', 'X'}, {'c', 'C'}, 
-    {'v', 'V'}, {'b', 'B'}, {'n', 'N'}, {'m', 'M'}, {',', '<'}, 
-    {'.', '>'}, {'/', '?'}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
+static const char* pressCodes[KEYS][2] =
+    {{0, 0}, {0, 0}, {"1", "!"}, {"2", "@"}, {"3", "#"}, {"4", "$"},
+    {"5", "%"}, {"6", "^"}, {"7", "&"}, {"8", "*"}, {"9", "("},
+    {"0", ")"}, {"-", "_"}, {"=", "+"}, {0, 0}, {0, 0}, {"q", "Q"}, 
+    {"w", "W"}, {"e", "E"}, {"r", "R"}, {"t", "T"}, {"y", "Y"}, 
+    {"u", "U"}, {"i", "I"}, {"o", "O"}, {"p", "P"}, {"[", "{"}, 
+    {"]", "}"}, {0, 0}, {0, 0}, {"a", "A"}, {"s", "S"}, 
+    {"d", "D"}, {"f", "F"}, {"g", "G"}, {"h", "H"}, {"j", "J"},
+    {"k", "K"}, {"l", "L"}, {";", ":"}, {"\"", "\""}, {"`", "~"},
+    {0, 0}, {"\\", "|"}, {"z", "Z"}, {"x", "X"}, {"c", "C"}, 
+    {"v", "V"}, {"b", "B"}, {"n", "N"}, {"m", "M"}, {",", "<"}, 
+    {".", ">"}, {"/", "?"}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
 static uint8_t scanCode, currentAction, specialChars[] = {0, 0}, capsLock = 0;
+
+int color[3] = {255, 255, 255};
 
 void keyboard_handler(){
     if (hasKey())
@@ -53,7 +55,8 @@ void keyboard_handler(){
                 break;
 
             case ENTER:
-                ncNewline();
+                //ncNewline();
+                newLine();
                 break;
 
             case CAPS_LCK:
@@ -61,25 +64,46 @@ void keyboard_handler(){
                 break;
 
             case SPACE:
-                ncPrintChar(' ');
+               // ncPrintChar(" ");
+
+                writeWord(" ", 1.5, color);
                 break;
 
             case B_SPACE:
-                deletechar();
+               // deletechar();
+               deleteChar();
                 break;
 
             default:
                 if (pressCodes[scanCode][0])
                 {
                     if (!IS_LETTER(pressCodes[scanCode][0]))
-                        ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
+                       // ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
+           
+                       writeWord(pressCodes[scanCode][specialChars[0] | specialChars[1]],1.5, color );
                     else
                     {
-                        ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
+                        //ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
+                        writeWord(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))], 1.5 , color);
                     }
                 }
             }
+            
         }
+        else if (currentAction == RELEASED)
+            {
+                switch (scanCode)
+                {
+                case L_SHFT | 0x80:
+                    specialChars[0] = 0;
+                    break;
+
+                case R_SHFT | 0x80:
+                    specialChars[1] = 0;
+                    break;
+                }
+            }
+        
     }
 }
 
@@ -107,7 +131,7 @@ void poolingKeyboard()
                     capsLock = capsLock == 1 ? 0 : 1;
                     break;
                 case SPACE:
-                    ncPrintChar(' ');
+                    ncPrintChar(" ");
                     break;
                 default:
                     if(pressCodes[scanCode][0]){
