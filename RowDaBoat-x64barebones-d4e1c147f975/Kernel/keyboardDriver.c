@@ -1,5 +1,6 @@
 #include <keyboardDriver.h>
 #include <video_driver.h>
+#include <naiveConsole.h>
 
 
 #define KEYS 59
@@ -13,12 +14,17 @@
 #define SPACE 0x39
 #define CAPS_LCK 0x3A
 #define ENTER 0x1C
+#define CTRL 0x1D
 
 #define IS_LETTER(c) (c >= 'a' && c <= 'z' ? 1 : 0)
 
 #define ABS(num) (num >= 0 ? num : num * -1)
 
 static uint8_t action(uint8_t scanCode);
+
+int isLetter(const char * c){
+  return (c[0] >= 'a' && c[0] <= 'z') ? 1 : 0;
+}
 
 static const char* pressCodes[KEYS][2] =
     {{0, 0}, {0, 0}, {"1", "!"}, {"2", "@"}, {"3", "#"}, {"4", "$"},
@@ -33,7 +39,7 @@ static const char* pressCodes[KEYS][2] =
     {"v", "V"}, {"b", "B"}, {"n", "N"}, {"m", "M"}, {",", "<"}, 
     {".", ">"}, {"/", "?"}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
-static uint8_t scanCode, currentAction, specialChars[] = {0, 0}, capsLock = 0;
+static uint8_t scanCode, currentAction, specialChars[] = {0, 0}, capsLock = 0, control=0;
 
 int color[3] = {255, 255, 255};
 
@@ -74,17 +80,26 @@ void keyboard_handler(){
                deleteChar();
                 break;
 
+            case CTRL:
+                control = 1;
+                break;
+
             default:
-                if (pressCodes[scanCode][0])
-                {
-                    if (!IS_LETTER(pressCodes[scanCode][0]))
-                       // ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
-           
-                       writeWord(pressCodes[scanCode][specialChars[0] | specialChars[1]],1.5, color );
-                    else
+                if(control == 1 && scanCode == 2){
+                    changeScreen();
+                }
+                else{
+                    if (pressCodes[scanCode][0])
                     {
-                        //ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
-                        writeWord(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))], 1.5 , color);
+                        if (!isLetter(pressCodes[scanCode][0]))
+                        // ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
+            
+                        writeWord(pressCodes[scanCode][specialChars[0] | specialChars[1]],1.5, color );
+                        else
+                        {
+                            //ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
+                            writeWord(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))], 1.5 , color);
+                        }
                     }
                 }
             }
@@ -101,7 +116,11 @@ void keyboard_handler(){
                 case R_SHFT | 0x80:
                     specialChars[1] = 0;
                     break;
+                case CTRL | 0x80:
+                    control = 0;
+                    break;
                 }
+                
             }
         
     }
@@ -135,7 +154,7 @@ void poolingKeyboard()
                     break;
                 default:
                     if(pressCodes[scanCode][0]){
-                        if (!IS_LETTER(pressCodes[scanCode][0]))
+                        if (!isLetter(pressCodes[scanCode][0]))
                             ncPrintChar(pressCodes[scanCode][specialChars[0]|specialChars[1]]);
                         else{
                             ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
