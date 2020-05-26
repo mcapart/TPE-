@@ -135,11 +135,10 @@ int main()
 
 
 	//while (1);
+	screenLine();
 	int color[2] = {0, 255};
 	writeWord("   Trabajo Practico Especial 2020:", 1.5, color);
-	newLine();
 	writeWord("hola1", 1.5, color);
-	newLine();
 	writeWord("hola2", 1.5, color);
 	writeWord("mica", 1.5, color);
 	deleteLine();

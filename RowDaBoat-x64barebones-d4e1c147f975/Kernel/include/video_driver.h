@@ -15,5 +15,8 @@ void deleteChar();
 
 void deleteLine();
 
+void screenLine();
+
+void changeScreen();
 
 #endif

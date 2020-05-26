@@ -172,17 +172,53 @@ char font8x8_basic[128][8] = {
 
 struct vbe_mode_info_structure * screen_info = 0x5C00;
 
-
-int WIDTH = 1024;
+int MAXWIDTH = 1024;
+int start = 0;
+int startAux = 1024/2 + 2;
+int width = 1024/2-1;
+int widthAux = 1024;
 int HEIGHT = 768;
-static int actX=0;
+static int actX = 0;
 static int actY= 0;
+static int actXaux=0;
+static int actYaux= 0;
 static double getMaxY = 0;
 static double currentSize;
+static double getMaxYaux = 0;
+static double currentSizeaux;
 
+void screenLine(){
+    for(int i = 1024/2; i < 1024/2 + 2; i++){
+        for(int j = 0; j < HEIGHT; j++){
+            int color[3] = { 255, 255, 255};
+            writePixel(i,j,1,color);
+        }
+    }
+}
+
+void changeScreen(){
+    int aux = startAux;
+    startAux = start;
+    start = aux;
+    aux = widthAux;
+    widthAux = width;
+    width = aux;
+    aux = actXaux;
+    actXaux = actX;
+    actX = aux;
+    aux = actYaux;
+    actYaux = actY;
+    actY = aux;
+    double aux2 = currentSizeaux;
+    currentSizeaux = currentSize;
+    currentSize = aux2;
+    aux2 = getMaxYaux;
+    getMaxYaux = getMaxY;
+    getMaxY = aux2;
+}
 
 char * getPixelDataByPosition(int x, int y){
-    return screen_info->framebuffer + (x + y * WIDTH)*3;
+    return screen_info->framebuffer + (x + y * MAXWIDTH)*3;
 }
 
 int writePixel(int x, int y, double size, int color[3]){
@@ -210,25 +246,25 @@ void writeChar(char c, int x, int y, double size, int color[3]){
 
 void newLine(){
     actY += getMaxY * 8;
-    actX = 0;
+    actX = start;
 }
 
 void clear(){
    	for(int i = 0; i <= actY+8*getMaxY; i++){
-		for(int j = 0; j < WIDTH; j++){
+		for(int j = start; j < width; j++){
     		char * pos = getPixelDataByPosition(j, i);
     		pos[0] = 0; //azul
     		pos[1] = 0; //verde
     		pos[2] = 0; //rojo
 		}
 	}
-    actX = 0;
+    actX = start;
     actY = 0;
     getMaxY = 0;
 }
 
 void deleteChar(){
-    for(int i = actX; i >= actX-8*currentSize; i--){
+    for(int i = actX; i >= actX-8*currentSize && i > start; i--){
         for(int j=actY;j <= actY+8*currentSize;j++){
             char * pos = getPixelDataByPosition( i, j);
             pos[0] = 0; //azul
@@ -237,12 +273,14 @@ void deleteChar(){
         }
 		
 	}
-    actX-=8*currentSize;
+    if(actX > start){
+        actX-=8*currentSize;
+    }
     
 }
 
 void deleteLine(){
-      for(int i = actX; i >= 0; i--){
+      for(int i = actX; i >= start; i--){
         for(int j=actY;j <= actY+8*currentSize;j++){
             char * pos = getPixelDataByPosition( i, j);
             pos[0] = 0; //azul
@@ -256,12 +294,12 @@ void deleteLine(){
 
 void writeWord(char * c,double size, int color[3]){
 
-    if(actX == 0){
+    if(actX == start){
         getMaxY = size;
     }
 	for(int i = 0; c[i] != 0; i++){
-		if((actX + 8 * size) > WIDTH){
-			actX = 0;
+		if((actX + 8 * size) > width){
+			actX = start;
 			actY += 8 * getMaxY;
             getMaxY = size;
 
