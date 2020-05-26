@@ -175,43 +175,102 @@ struct vbe_mode_info_structure * screen_info = 0x5C00;
 
 int WIDTH = 1024;
 int HEIGHT = 768;
+static int actX=0;
+static int actY= 0;
+static double getMaxY = 0;
+static double currentSize;
 
 
 char * getPixelDataByPosition(int x, int y){
     return screen_info->framebuffer + (x + y * WIDTH)*3;
 }
 
-int writePixel(int x, int y, int size){
+int writePixel(int x, int y, double size, int color[3]){
 	for(int i = 0; i < size; i++){
 		for(int j = 0; j < size; j++){
     		char * pos = getPixelDataByPosition(x + i, y + j);
-    		pos[0] = 255; //azul
-    		pos[1] = 255; //verde
-    		pos[2] = 255; //rojo
+    		pos[0] = color[0]; //azul
+    		pos[1] = color[1]; //verde
+    		pos[2] = color[2]; //rojo
 		}
 	}
 }
 
-void writeChar(char c, int x, int y, int size){
+void writeChar(char c, int x, int y, double size, int color[3]){
+    currentSize = size;
 	for(int i = 0; i<8; i++){
 		for(int j = 0; j<8; j++){
 			if((font8x8_basic[c][i] >> j) & 1){
-				writePixel(x + j * size,y + i * size, size);
+				writePixel(x + j * size,y + i * size, size, color);
 			}
 		}
 	}
 
 }
 
-void writeWord(char * c,int size){
-	static int actX=0;
-	static int actY= 0;
+void newLine(){
+    actY += getMaxY * 8;
+    actX = 0;
+}
+
+void clear(){
+   	for(int i = 0; i <= actY+8*getMaxY; i++){
+		for(int j = 0; j < WIDTH; j++){
+    		char * pos = getPixelDataByPosition(j, i);
+    		pos[0] = 0; //azul
+    		pos[1] = 0; //verde
+    		pos[2] = 0; //rojo
+		}
+	}
+    actX = 0;
+    actY = 0;
+    getMaxY = 0;
+}
+
+void deleteChar(){
+    for(int i = actX; i >= actX-8*currentSize; i--){
+        for(int j=actY;j <= actY+8*currentSize;j++){
+            char * pos = getPixelDataByPosition( i, j);
+            pos[0] = 0; //azul
+            pos[1] = 0; //verde
+            pos[2] = 0; //rojo
+        }
+		
+	}
+    actX-=8*currentSize;
+    
+}
+
+void deleteLine(){
+      for(int i = actX; i >= 0; i--){
+        for(int j=actY;j <= actY+8*currentSize;j++){
+            char * pos = getPixelDataByPosition( i, j);
+            pos[0] = 0; //azul
+            pos[1] = 0; //verde
+            pos[2] = 0; //rojo
+        }
+		
+	}
+    actX=0;
+}
+
+void writeWord(char * c,double size, int color[3]){
+
+    if(actX == 0){
+        getMaxY = size;
+    }
 	for(int i = 0; c[i] != 0; i++){
 		if((actX + 8 * size) > WIDTH){
 			actX = 0;
-			actY += 8 * size;
+			actY += 8 * getMaxY;
+            getMaxY = size;
+
 		}
-		writeChar(c[i],actX, actY, size);
+		writeChar(c[i],actX, actY, size, color);
+        if(getMaxY < size){
+            getMaxY = size;
+        }
 		actX += 8 * size;
 	}
+    
 }
