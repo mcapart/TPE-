@@ -98,7 +98,7 @@ void printFrase(char * s){
 
 int main()
 {	
-	load_idt();
+	//load_idt();
 	
 	ncPrint("[Kernel Main]");
 	ncNewline();
@@ -135,7 +135,7 @@ int main()
 
 
 	//while (1);
-	screenLine();
+	/* screenLine();
 	int color[2] = {0, 255};
 	writeWord("Trabajo Practico Especial 2020:", 1.5, color);
 	writeWord("hola1", 1.5, color);
@@ -148,7 +148,7 @@ int main()
 	newLine();
 
 	while(1);
-
+*/
 	//writeWord("18 I cloned a repository to my desktop machine using git clone sshurl. As expected, this created a folder in my desktop.Now, instead of a single file, I want to push a whole folder into git. For example, the folder that I cloned is named project_iphone. Now I add another folder called my_project into project_iphone. The my_project folder contains lots of files and folders as well.My question is, how should I push my_project folder to the server?Step-by-step instructions would be helpful.Thank You.", 4, color);
 	
 	return 0;
