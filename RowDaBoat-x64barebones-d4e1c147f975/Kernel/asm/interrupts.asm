@@ -12,6 +12,7 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
+GLOBAL _syscallHandler
 
 GLOBAL _exception0Handler
 
@@ -113,6 +114,21 @@ picSlaveMask:
     pop     rbp
     retn
 
+_syscallHandler:
+	push rbp
+	mov rbp, rsp
+
+	push rcx
+	mov rcx, rax
+	push r10
+	call systemCall
+	pop r10
+	pop rcx
+
+	mov rsp, rbp
+	pop rbp 
+	ret 
+
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
@@ -137,6 +153,11 @@ _irq04Handler:
 ;USB
 _irq05Handler:
 	irqHandlerMaster 5
+
+;ChangeScreen
+_irq06Handler:
+	irqHandlerMaster 6
+
 
 
 ;Zero Division Exception

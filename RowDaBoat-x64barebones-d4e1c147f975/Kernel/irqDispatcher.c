@@ -13,6 +13,7 @@ void irqDispatcher(uint64_t irq) {
 		case 1:
 			int_21();
 			break;
+		
 	}
 	return;
 }
