@@ -12,12 +12,13 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
-GLOBAL _syscallHandler
+GLOBAL int_80h
 
 GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN systemCall
 
 SECTION .text
 
@@ -114,17 +115,13 @@ picSlaveMask:
     pop     rbp
     retn
 
-_syscallHandler:
+int_80h:
 	push rbp
 	mov rbp, rsp
-
 	push rcx
 	mov rcx, rax
-	push r10
 	call systemCall
-	pop r10
 	pop rcx
-
 	mov rsp, rbp
 	pop rbp 
 	ret 

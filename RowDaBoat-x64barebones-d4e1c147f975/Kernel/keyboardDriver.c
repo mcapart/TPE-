@@ -1,6 +1,5 @@
 #include <keyboardDriver.h>
-#include <video_driver.h>
-#include <naiveConsole.h>
+#include <lib.h>
 
 
 #define KEYS 59
@@ -22,8 +21,10 @@
 
 static uint8_t action(uint8_t scanCode);
 
-static char buffer[1024/2];
+static char buffer[70];
 static int actBuffer = 0;
+static char bufferAux[70];
+static int actBufferAux = 0;
 
 static const char pressCodes[KEYS][2] =
     {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'}, {'4', '$'},
@@ -77,8 +78,7 @@ void keyboard_handler(){
                 break;
 
             case B_SPACE:
-               // deletechar();
-                return 8;
+               // deletechar()
                 if(actBuffer){
                     buffer[actBuffer] = 8;
                     actBuffer ++;
@@ -92,7 +92,8 @@ void keyboard_handler(){
 
             default:
                 if(control == 1 && scanCode == 2){
-                    //cambio de pantalla
+                    buffer[actBuffer] = -2;
+                    actBuffer++;  
                 }
                 else{
                     if (pressCodes[scanCode][0])
@@ -195,4 +196,31 @@ static uint8_t action(uint8_t scanCode)
         return RELEASED;
 
     return ERRROR;
+}
+
+char * getNChar(int n){
+    char * resp;
+    int i = 0;
+    while (i<n && actBuffer > i) {
+        resp[i] = buffer[i];
+        i++;
+    }
+    resp[i] = 0;
+
+    for(int j=n, k=0;j<actBuffer;j++, k++){
+        buffer[k] = buffer[j];
+    }
+    actBuffer-=i;
+    return resp;
+}
+
+void changeBuffer(){
+    char * aux = buffer;
+    memcpy(buffer, bufferAux, 70);
+    memcpy(bufferAux, aux, 70);
+    
+    int aux2 = actBuffer;
+    actBuffer = actBufferAux;
+    actBufferAux = aux2;
+
 }

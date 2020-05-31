@@ -98,7 +98,7 @@ void printFrase(char * s){
 
 int main()
 {	
-	//load_idt();
+	load_idt();
 	
 	ncPrint("[Kernel Main]");
 	ncNewline();
@@ -120,6 +120,8 @@ int main()
 	ncPrint("[Finished]");
 
 	ncClear();
+
+	while(1);
 
 
 	//ncNewline();
