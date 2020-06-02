@@ -4,22 +4,24 @@
 
 char * v = (char*)0xB8000 + 79 * 2;
 
-static int var1 = 0;
-static int var2 = 0;
+
 
 
 int main() {
 	
-	//All the following code may be removed 
-	//*v = 'X';
-	//*(v+1) = 0x74;
 
-	//Test if BSS is properly set up
-	//if (var1 == 0 && var2 == 0)
-	//	return 0xDEADC0DE;
+	char text[10] = {0};
+//	print("hola");
+	int n=0;
+	while(1){
+		getChar(text);
+		
+	}
 
-	//return 0xDEADBEEF;
-	print("holaa soy micaaaa");
+	return 0;
+
+	
+	
 
 
 }

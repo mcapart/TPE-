@@ -6,7 +6,7 @@ static unsigned long ticks = 0;
 
 void timer_handler() {
 	ticks++;
-	int color[3] = {255, 255, 255};
+	
 	
 	
 	//if(seconds_elapsed()%5 == 0 && ticks_elapsed()%18 == 0 ){

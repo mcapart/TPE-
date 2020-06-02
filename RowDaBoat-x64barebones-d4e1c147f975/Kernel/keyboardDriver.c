@@ -1,5 +1,6 @@
 #include <keyboardDriver.h>
 #include <lib.h>
+#include <video_driver.h>
 
 
 #define KEYS 59
@@ -21,7 +22,7 @@
 
 static uint8_t action(uint8_t scanCode);
 
-static char buffer[70];
+static char buffer[70] = {0};
 static int actBuffer = 0;
 static char bufferAux[70];
 static int actBufferAux = 0;
@@ -44,12 +45,14 @@ static uint8_t scanCode, currentAction, specialChars[] = {0, 0}, capsLock = 0, c
 int color[3] = {255, 255, 255};
 
 void keyboard_handler(){
+
     if (hasKey())
     {
         scanCode = getKey();
         currentAction = action(scanCode);
         if (currentAction == PRESSED)
         {
+           
             switch (scanCode)
             {
             case L_SHFT:
@@ -102,7 +105,10 @@ void keyboard_handler(){
                         {// ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
             
                         buffer[actBuffer] = (pressCodes[scanCode][specialChars[0] | specialChars[1]]);
+                        writeChar(buffer[actBuffer], 1.5, color);
                         actBuffer++;
+                    
+
                         }
                         else
                         {
@@ -198,8 +204,8 @@ static uint8_t action(uint8_t scanCode)
     return ERRROR;
 }
 
-char * getNChar(int n){
-    char * resp;
+void  getNChar(char * resp, int n){
+   
     int i = 0;
     while (i<n && actBuffer > i) {
         resp[i] = buffer[i];
@@ -211,7 +217,9 @@ char * getNChar(int n){
         buffer[k] = buffer[j];
     }
     actBuffer-=i;
-    return resp;
+    writeWord(resp, 1.5, color);
+    newLine();
+  
 }
 
 void changeBuffer(){

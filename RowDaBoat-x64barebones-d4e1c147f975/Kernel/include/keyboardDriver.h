@@ -7,7 +7,7 @@ void keyboard_handler();
 uint8_t hasKey(void);
 uint8_t getKey(void);
 int isLetter(const char *);
-char * getNChar(int n);
+void getNChar(char * resp, int n);
 void changeBuffer();
 
 

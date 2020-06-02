@@ -120,8 +120,7 @@ int main()
 	ncPrint("[Finished]");
 
 	ncClear();
-
-	while(1);
+	
 
 
 	//ncNewline();

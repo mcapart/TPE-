@@ -232,15 +232,24 @@ int writePixel(int x, int y, double size, int color[3]){
 	}
 }
 
-void writeChar(char c, int x, int y, double size, int color[3]){
+void writeChar(char c, double size, int color[3]){
     currentSize = size;
+    	if((actX + 8 * size) > width){
+			actX = start;
+			//actY += 8 * getMaxY;
+            scroll(size);
+            getMaxY = size;
+
+		}
 	for(int i = 0; i<8; i++){
 		for(int j = 0; j<8; j++){
 			if((font8x8_basic[c][i] >> j) & 1){
-				writePixel(x + j * size,y + i * size, size, color);
+				writePixel(actX + j * size,actY + i * size, size, color);
+                
 			}
 		}
 	}
+    actX+= 8*size;
     if(actX == width){
         actX = start;
         scroll(1.5);
@@ -320,18 +329,10 @@ void writeWord(char * c,double size, int color[3]){
         getMaxY = size;
     }
 	for(int i = 0; c[i] != 0; i++){
-		if((actX + 8 * size) > width){
-			actX = start;
-			//actY += 8 * getMaxY;
-            scroll(size);
-            getMaxY = size;
-
-		}
-		writeChar(c[i],actX, actY, size, color);
+		writeChar(c[i], size, color);
         if(getMaxY < size){
             getMaxY = size;
         }
-		actX += 8 * size;
 	}
 
     

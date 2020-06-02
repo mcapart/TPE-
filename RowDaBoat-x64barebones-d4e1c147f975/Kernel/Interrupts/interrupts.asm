@@ -124,6 +124,7 @@ int_80h:
 	pop rcx
 	mov rsp, rbp
 	pop rbp 
+	sti
 	ret 
 
 
