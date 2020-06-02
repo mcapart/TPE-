@@ -1,6 +1,7 @@
 GLOBAL print 
 GLOBAL getChar 
 GLOBAL changeApp
+GLOBAL start
 section .text
 
 ; void print(char *)
@@ -14,7 +15,6 @@ print:
     
     mov rsp, rbp
     pop rbp
-    sti
     ret
            
 ;void getChar(char *);
@@ -29,7 +29,6 @@ getChar:
 
     mov rsp, rbp
     pop rbp
-    sti
     ret
 
 ;void changeApp();
@@ -38,6 +37,17 @@ changeApp:
     mov rbp, rsp
 
     mov rax, 3  
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+;void start();
+start:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 4  
     int 80h
 
     mov rsp, rbp

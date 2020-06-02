@@ -9,6 +9,7 @@ void timer_handler() {
 	
 	
 	
+	
 	//if(seconds_elapsed()%5 == 0 && ticks_elapsed()%18 == 0 ){
 	//	ncNewline();
 	

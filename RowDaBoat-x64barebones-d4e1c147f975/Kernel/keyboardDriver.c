@@ -1,6 +1,7 @@
 #include <keyboardDriver.h>
 #include <lib.h>
 #include <video_driver.h>
+#include <interrupts.h>
 
 
 #define KEYS 59
@@ -105,7 +106,7 @@ void keyboard_handler(){
                         {// ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
             
                         buffer[actBuffer] = (pressCodes[scanCode][specialChars[0] | specialChars[1]]);
-                        writeChar(buffer[actBuffer], 1.5, color);
+                    
                         actBuffer++;
                     
 
@@ -205,7 +206,9 @@ static uint8_t action(uint8_t scanCode)
 }
 
 void  getNChar(char * resp, int n){
-   
+   while(actBuffer == 0){
+       _hlt();
+   }
     int i = 0;
     while (i<n && actBuffer > i) {
         resp[i] = buffer[i];
@@ -217,8 +220,7 @@ void  getNChar(char * resp, int n){
         buffer[k] = buffer[j];
     }
     actBuffer-=i;
-    writeWord(resp, 1.5, color);
-    newLine();
+
   
 }
 

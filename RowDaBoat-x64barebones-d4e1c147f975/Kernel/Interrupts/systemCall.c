@@ -7,6 +7,7 @@
 void sys_read(uint64_t rdi, char * rsi, uint64_t rdx);//rax = 1 => syscall read 
 void sys_write(uint64_t rdi, char * rsi, uint64_t rdx);//rax = 2 => syscall wirte
 void sys_changeApp();//rax = 3 => syscall changeApp
+void sys_start(); //rax = 4 => syscall start
 
 void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
     switch(rax){
@@ -15,6 +16,8 @@ void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
         case 2: sys_write(rdi,(char *) rsi, rdx);
                 break;
         case 3: sys_changeApp();  
+                break;
+        case 4: sys_start();
                 break;
 
     }
@@ -33,4 +36,7 @@ void sys_write(uint64_t rdi, char * rsi, uint64_t rdx){
 void sys_changeApp(){
     changeScreen();
     changeBuffer();
+}
+void sys_start(){
+    screenLine();
 }

@@ -7,4 +7,6 @@ void getChar(char * c);
 
 void changeApp();
 
+void start();
+
 #endif
