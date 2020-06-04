@@ -83,11 +83,9 @@ void keyboard_handler(){
 
             case B_SPACE:
                // deletechar()
-                if(actBuffer){
-                    buffer[actBuffer] = 8;
-                    actBuffer ++;
-                }
-
+               // writeChar('b', 1.5, color);
+                buffer[actBuffer] = 8;
+                actBuffer ++;
                 break;
 
             case CTRL:

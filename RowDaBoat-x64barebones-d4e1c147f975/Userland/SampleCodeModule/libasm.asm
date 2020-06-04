@@ -2,6 +2,7 @@ GLOBAL print
 GLOBAL getChar 
 GLOBAL changeApp
 GLOBAL start
+GLOBAL delete
 section .text
 
 ; void print(char *)
@@ -54,5 +55,15 @@ start:
     pop rbp
     ret
 
+;void delete();
+delete:
+    push rbp
+    mov rbp, rsp
 
+    mov rax, 5  
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
 

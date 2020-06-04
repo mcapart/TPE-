@@ -9,4 +9,6 @@ void changeApp();
 
 void start();
 
+void delete();
+
 #endif
