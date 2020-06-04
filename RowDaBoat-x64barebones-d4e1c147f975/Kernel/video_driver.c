@@ -279,6 +279,10 @@ void clear(){
 }
 
 void deleteChar(){
+    if(actX == start){
+        actX = width;
+        actY -= 8*currentSize;
+    }
     for(int i = actX; i >= actX-8*currentSize && i >= start; i--){
         for(int j=actY;j <= actY+8*currentSize;j++){
             char * pos = getPixelDataByPosition( i, j);

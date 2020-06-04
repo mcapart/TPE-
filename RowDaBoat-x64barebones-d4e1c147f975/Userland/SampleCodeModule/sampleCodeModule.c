@@ -16,7 +16,7 @@ int main() {
 	int n = 0;
 	while(text[0]!= 10){
 		getChar(text);
-		if(text[0] == 8){
+		if(text[0] == 8 && n > 0){
 			n--;
 			buffer[n] = 0;
 			delete();
@@ -32,8 +32,6 @@ int main() {
 			n++;
 			print(text);
 		}
-		
-		
 	}
 	print(buffer);
 
