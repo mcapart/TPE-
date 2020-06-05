@@ -2,8 +2,11 @@ GLOBAL print
 GLOBAL getChar 
 GLOBAL changeApp
 GLOBAL start
-GLOBAL delete
+GLOBAL deleteChar
 GLOBAL newLine
+GLOBAL getHour
+GLOBAL getMin
+GLOBAL getSec
 section .text
 
 ; void print(char *)
@@ -56,8 +59,8 @@ start:
     pop rbp
     ret
 
-;void delete();
-delete:
+;void deleteChar();
+deleteChar:
     push rbp
     mov rbp, rsp
 
@@ -74,6 +77,42 @@ newLine:
     mov rbp, rsp
 
     mov rax, 6  
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+;void getHour(uint64_t * v);
+getHour:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 7  
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+;void getMin(uint64_t * v);
+getMin:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 8 
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+;void getSec(uint64_t * v);
+getSec:
+  push rbp
+    mov rbp, rsp
+
+    mov rax, 9  
     int 80h
 
     mov rsp, rbp

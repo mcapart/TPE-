@@ -220,7 +220,7 @@ int calculator(){
         if(text[0] == 8 && n > 0){
             n--;
             buffer[n] = 0;
-            delete();
+            deleteChar();
         }
         else if(text[0] == -2){
             changeApp();
