@@ -1,39 +1,32 @@
 /* sampleCodeModule.c */
-#include "libasm.h"
+#include <lib.h>
+#include <calculator.h>
 
 
 char * v = (char*)0xB8000 + 79 * 2;
 
 
-
-
 int main() {
 	
-	char text[10] = {0};
+
 	start();
-	char buffer[70] = {0};
+	int app = 0; 
 	
-	int n = 0;
-	while(text[0]!= 10){
-		getChar(text);
-		if(text[0] == 8 && n > 0){
-			n--;
-			buffer[n] = 0;
-			delete();
-		}
-		else if(text[0] == -2){
-			changeApp();
-			n=0;
+	while(1){
+		
+		switch (app)
+		{
+		case 0 : app = calculator();
+			break;	
+		case 1 : app = shell();
+			break;
+		default:
+			break;
 		}
 		
-		else
-		{
-			buffer[n] = text[0];
-			n++;
-			print(text);
-		}
+		
+		
 	}
-	print(buffer);
 
 	return 0;
 

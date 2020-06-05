@@ -9,6 +9,7 @@ void sys_write(uint64_t rdi, char * rsi, uint64_t rdx);//rax = 2 => syscall wirt
 void sys_changeApp();//rax = 3 => syscall changeApp
 void sys_start(); //rax = 4 => syscall start
 void sys_delete(); //rax = 5 => syscall delete
+void sys_newLine(); //rax = 6 => syscall newLine
 
 void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
     switch(rax){
@@ -21,6 +22,8 @@ void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
         case 4: sys_start();
                 break;
         case 5: sys_delete();
+                break;
+        case 6: sys_newLine();
                 break;
 
     }
@@ -45,4 +48,8 @@ void sys_start(){
 }
 void sys_delete(){
     deleteChar();
+}
+
+void sys_newLine(){
+    newLine();
 }

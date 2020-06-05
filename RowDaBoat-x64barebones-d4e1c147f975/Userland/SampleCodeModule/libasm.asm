@@ -3,6 +3,7 @@ GLOBAL getChar
 GLOBAL changeApp
 GLOBAL start
 GLOBAL delete
+GLOBAL newLine
 section .text
 
 ; void print(char *)
@@ -67,3 +68,14 @@ delete:
     pop rbp
     ret
 
+;void newLine();
+newLine:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 6  
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret

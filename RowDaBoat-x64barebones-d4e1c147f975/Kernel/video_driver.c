@@ -237,8 +237,16 @@ void writeChar(char c, double size, int color[3]){
     	if((actX + 8 * size) > width){
 			actX = start;
 			//actY += 8 * getMaxY;
-            scroll(size);
+            if(actY == 765-8*size){
+                 scroll(size);
+            }
+            else
+            {
+                actY += 8*size;
+            }
+            
             getMaxY = size;
+            
 
 		}
 	for(int i = 0; i<8; i++){
@@ -252,14 +260,27 @@ void writeChar(char c, double size, int color[3]){
     actX+= 8*size;
     if(actX == width){
         actX = start;
-        scroll(1.5);
+        if(actY == 765-8*size){
+            scroll(size);
+         }
+        else
+        {
+            actY = 765-8*size;
+        }
+       
     }
 
 }
 
 void newLine(){
     //actY += getMaxY * 8;
-    scroll(1.5);
+    if(actY == 765-8*currentSize){
+        scroll(currentSize);
+    }
+    else
+    {
+        actY = 765-8*currentSize;
+    }
     actX = start;
 }
 
@@ -280,7 +301,7 @@ void clear(){
 
 void deleteChar(){
     if(actX == start){
-        actX = width;
+        actX = 504;
         actY -= 8*currentSize;
     }
     for(int i = actX; i >= actX-8*currentSize && i >= start; i--){
@@ -312,6 +333,7 @@ void deleteLine(){
 }
 
 void scroll(double size){
+  
     for(int i=start;i<width;i++){
         for(int j=size*8;j<HEIGHT;j++){
             char * pos = getPixelDataByPosition( i, j);
@@ -324,6 +346,7 @@ void scroll(double size){
             pos[2] = 0;
         }
     }
+    
 }
 
 

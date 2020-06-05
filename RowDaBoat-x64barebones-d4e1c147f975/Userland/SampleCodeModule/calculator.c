@@ -1,48 +1,5 @@
 #include <calculator.h>
-
-static void reverse(char * c, int l){
-    int start = 0; 
-    int end = l -1; 
-    while (start < end) 
-    { 
-        char aux = c[start];
-        c[start] = c [end];
-        c[end] = aux;
-        start++; 
-        end--; 
-    } 
-}
-
-char * numToChar(double num, char * c){
-    int entera = num;
-    double decimal = num - entera;
-    int i = 0;
-    if(num < 0){
-        entera = entera * -1;
-        decimal = decimal * -1;
-    }
-    for(; i < 99 && entera > 0; i++){
-        int valor = entera % 10;
-        c[i] = valor + '0';
-        entera = entera/10;
-    }
-    if(num < 0){
-        c[i] = '-';
-        i++;
-    }
-    reverse(c,i);
-    if(decimal != 0){
-      	c[i] = '.';
-      	i++;
-        for(int j = 0;i < 100 && j < 8; i++, j++){
-            int aux = decimal * 10;
-            c[i] = (aux % 10) + '0';
-            decimal = decimal * 10;
-        }
-    }
-  	c[i] = 0;
-    return c;
-}
+#include <lib.h>
 
 static int numOp(char c){
     switch (c)
@@ -63,6 +20,7 @@ static int numOp(char c){
         return -1;
     }
 }
+int CANT_DECIMALES=1000000;
 
 static int precedenceMatriz[5][6]={
                 {1, 1,0,0,0,1},
@@ -84,7 +42,7 @@ static int getPrecendence(char tope,char current){
     return precedenceMatriz[topeIndex][currentIndex];
 }
 
-static double operate(double num1, double num2, char operator){
+static int operate(double num1, double num2, char operator){
     double resp;
     switch (operator){
         case '+':resp = num1 + num2;break;
@@ -93,7 +51,7 @@ static double operate(double num1, double num2, char operator){
         case '*':resp = num1 * num2;break;
         default: break;//cambiar
     }
-    return resp;
+    return (int) (resp * CANT_DECIMALES); 
 }
 
 //devuelve 1 si c es un numero, 0 si no
@@ -104,7 +62,7 @@ static int is_number(char c){
     return 1;
 }
 
-static double numChar(char * c, int entero, int decimal){
+static int numChar(char * c, int entero, int decimal){
     double resp = 0;
     int i = 0;
     for(; i < entero; i++)
@@ -118,32 +76,36 @@ static double numChar(char * c, int entero, int decimal){
 
     resp = resp / 10;
 
-    for(double aux = 10; i- entero < decimal && i < entero + 4; i++){
+    for(double aux = 10; i- entero < decimal && i < entero + 6; i++){
         if(!is_number(c[i])){
             return -2;//cambiar
         }
         resp = resp + (c[i] - '0') / aux;
         aux = aux * 10;
     }
-    return resp;
+    return (int) (resp * CANT_DECIMALES); 
 }
 
-double calculator(char * c){
+static int evaluator(char * c){
     char op[100]= {0};
     int itOp = 0;
     double num[100]= {0};
     int itNum = 0;
     for(int i = 0; c[i] != '='; i++){
+    
         while(c[i] == ' '){
             i++;
         }
+
         if(is_number(c[i]) || (numOp(c[i])== 1 && is_number(c[i+1]))){
+            
             int punto = 0;
             char resp[20];
             int itResp = 0;
             int cantEnt = 0;
             int cantDec = 0;
             int negativo = 0;
+            
             if(c[i] == '-'){
                 negativo = 1;
                 i++;
@@ -168,12 +130,19 @@ double calculator(char * c){
                 i++;
             }
            if(!negativo){
-                    num[itNum] = numChar(resp,cantEnt,cantDec);
-                }
-                else{
-                    num[itNum] = -1 * numChar(resp,cantEnt,cantDec);
-                }
-                itNum++;
+                num[itNum] = (double) numChar(resp,cantEnt,cantDec) / CANT_DECIMALES;
+            }
+            else{
+                num[itNum] = -1 * ((double) numChar(resp,cantEnt,cantDec) / CANT_DECIMALES);
+            }
+            itNum++;
+            for(int i =0;i<itResp;i++){
+                resp[i] = 0;
+            }
+            itResp = 0;
+           
+
+                
         }
         else if(numOp(c[i]) != -1){
             if(c[i+1] != ' '){
@@ -189,7 +158,7 @@ double calculator(char * c){
                     if(itNum < 2){
                         return -5; //cambiar
                     }
-                    double resp = operate(num[itNum-2],num[itNum-1],op[itOp-1]);
+                    double resp = (double) operate(num[itNum-2],num[itNum-1],op[itOp-1]) / CANT_DECIMALES;
                     num[itNum-2] = resp;
                     itOp--;
                     itNum--;
@@ -207,10 +176,16 @@ double calculator(char * c){
             }
 
         }
+        else if(c[i] == '='){
+            i--;
+        }
         else{
             return -7;//cambiar
         }
+       
+      
     }
+   
     while(itOp > 0){
         if(op[itOp-1] == '('){
             return -8;//cambiar
@@ -218,7 +193,7 @@ double calculator(char * c){
          if(itNum < 2){
             return -9; //cambiar
         }
-        double resp = operate(num[itNum-2],num[itNum-1],op[itOp-1]);
+        double resp = (double) operate(num[itNum-2],num[itNum-1],op[itOp-1]) / CANT_DECIMALES;
         num[itNum-2] = resp;
         itOp--;
         itNum--;
@@ -226,6 +201,52 @@ double calculator(char * c){
     if(itNum > 1){
         return -10; //cambiar
     }
-  	
-    return num[0];
+
+   
+    int v = num[0] * CANT_DECIMALES;
+   
+   
+    return v;
 }
+
+static char buffer[70] = {0};
+static int n = 0;
+int calculator(){
+    
+	char text[10] = {0};
+	
+    while(text[0]!= '='){
+        getChar(text);
+        if(text[0] == 8 && n > 0){
+            n--;
+            buffer[n] = 0;
+            delete();
+        }
+        else if(text[0] == -2){
+            changeApp();
+            n=0;
+            return 1;
+        }
+        
+        else
+        {
+            buffer[n] = text[0];
+            n++;
+            print(text);
+        }
+    }
+		
+    buffer[n] = '=';
+    double v = evaluator(buffer) / 1000000.0;
+    char * t;
+    numToChar(v, t);
+    //print(buffer);
+    print(t);
+    buffer[n] = 0;
+    text[0] = 0;
+    n = 0;
+    newLine();
+    return 0;
+    
+}
+
