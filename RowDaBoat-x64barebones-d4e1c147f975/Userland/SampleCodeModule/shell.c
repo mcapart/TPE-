@@ -8,16 +8,35 @@ void printTime(){
     getHour(&h);
     getMin(&m);
     getSec(&s);
-    h-=3;
-    char * ch;
-    char * cm;
-    char * cs;
+    if(h < 3){
+        switch (h)
+        {
+        case 0: h = 21;
+            break;
+        case 1: h = 22;
+            break;
+        case 2: h = 23;
+            break;
+        case 3: h = 24;
+            break;
+        
+        default:
+            break;
+        }
+    }
+    else
+    {
+        h-=3;
+    }
+    char ch[3];
+    char cm[3];
+    char cs[3];
     numToChar(h, ch);
-    print(ch);
-    print(":");
     numToChar(m, cm);
     numToChar(s, cs);
-   
+
+    print(ch);
+    print(":");
     print(cm);
     print(":");
     print(cs);
