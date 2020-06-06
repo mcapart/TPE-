@@ -24,4 +24,6 @@ void getMin(uint64_t * v);
 
 void getSec(uint64_t * v);
 
+void getCpuVendor(char * c, uint32_t * v);
+
 #endif

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <video_driver.h>
 #include <keyboardDriver.h> 
+#include <lib.h>
 
 
 extern uint8_t getHou();
@@ -18,6 +19,7 @@ void sys_newLine(); //rax = 6 => syscall newLine
 void sys_currentHour(uint64_t * value);
 void sys_currentMin(uint64_t * value);
 void sys_currentSec(uint64_t * value);
+void sys_cpuInfo(char * vendor, uint32_t * version); //rax = 10 => syscall cpuVendor
 
 void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
     switch(rax){
@@ -39,6 +41,7 @@ void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
                 break;
         case 9: sys_currentSec((uint64_t *) rdi);
                 break;
+        case 10: sys_cpuInfo((char *) rdi, (uint32_t *) rsi);
     }
 }
 
@@ -79,4 +82,7 @@ void sys_currentSec(uint64_t  * value){
     value[0] = getSec();
 }
             
-
+void sys_cpuInfo(char * vendor , uint32_t * version){
+    cpuVendor(vendor);
+    cpuVersion(version);
+}
