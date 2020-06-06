@@ -1,7 +1,8 @@
 #include <lib.h>
 #include <stdint.h>
+#include <shell.h>
 
-void printTime(){
+static void printTime(){
     uint64_t h;
     uint64_t m;
     uint64_t s;
@@ -34,7 +35,6 @@ void printTime(){
     numToChar(h, ch);
     numToChar(m, cm);
     numToChar(s, cs);
-
     print(ch);
     print(":");
     print(cm);

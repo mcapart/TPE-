@@ -33,11 +33,11 @@ void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
                 break;
         case 6: sys_newLine();
                 break;
-        case 7: sys_currentHour(rdi);
+        case 7: sys_currentHour((uint64_t *) rdi);
                 break;
-        case 8: sys_currentMin(rdi);
+        case 8: sys_currentMin((uint64_t *) rdi);
                 break;
-        case 9: sys_currentSec(rdi);
+        case 9: sys_currentSec((uint64_t *) rdi);
                 break;
     }
 }

@@ -1,7 +1,7 @@
 /* sampleCodeModule.c */
 #include <lib.h>
 #include <calculator.h>
-
+#include <shell.h>
 
 char * v = (char*)0xB8000 + 79 * 2;
 

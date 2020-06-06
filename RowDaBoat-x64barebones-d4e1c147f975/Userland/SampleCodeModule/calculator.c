@@ -212,7 +212,7 @@ static int evaluator(char * c){
 static char buffer[70] = {0};
 static int n = 0;
 int calculator(){
-    
+
 	char text[10] = {0};
 	
     while(text[0]!= '='){
@@ -224,11 +224,11 @@ int calculator(){
         }
         else if(text[0] == -2){
             changeApp();
-            n=0;
+            
             return 1;
         }
         
-        else
+        else if(is_number(text[0]) || numOp(text[0]) != -1 || text[0] == ' ' || text[0] == '=')
         {
             buffer[n] = text[0];
             n++;
@@ -236,17 +236,19 @@ int calculator(){
         }
     }
 		
-    buffer[n] = '=';
     double v = evaluator(buffer) / 1000000.0;
-    char * t;
+    char t[40];
     numToChar(v, t);
     //print(buffer);
     print(t);
     buffer[n] = 0;
-    text[0] = 0;
     n = 0;
     newLine();
     return 0;
     
 }
 
+static void reStart(){
+    buffer[n] = 0;
+    n = 0;
+}
