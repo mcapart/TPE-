@@ -235,11 +235,11 @@ int calculator(){
             print(text);
         }
     }
-		
     double v = evaluator(buffer) / 1000000.0;
     char t[40];
     numToChar(v, t);
     //print(buffer);
+    print(" ");
     print(t);
     buffer[n] = 0;
     n = 0;

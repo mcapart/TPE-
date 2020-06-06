@@ -51,7 +51,7 @@ void sys_read(uint64_t rdi, char * rsi, uint64_t rdx){
 
 }
 void sys_write(uint64_t rdi, char * rsi, uint64_t rdx){
-    int color[3] = {125, 125, 125};
+    int color[3] = {255, 255, 255};
     writeWord(rsi, 1.5, color);
 
 }

@@ -51,24 +51,40 @@ static void printTime(){
 static void cpuInfo(){
     char text[70];
     char text2[70];
+    char text3[70];
     uint32_t num;
     getCpuVendor(text, &num);
-    int aux = (num | 0x78) / 8;
-    numToChar(aux, text2);
+    int modelo = (num & 0xFF0) >> 4;
+    int familia = modelo >> 4;
+    modelo = modelo & 0x0f;
+    numToChar(modelo, text2);
+    numToChar(familia, text3);
+    print("CPU:");
     print(text);
     newLine();
+    print("Modelo:");
     print(text2);
+    newLine();
+    print("Familia:");
+    print(text3);
     newLine();
 }
 
 int strComp(char * c1, char * c2){
     int i = 0;
-    for(; c1[i] != 0 && c2[i] != 0; i++){
-        if(c1[i] != c2[i]){
-            return c1[i] - c2[i];
+    int j = 0;
+    while(c1[j] == ' ' && c1[j] != 0){
+            j++;
+    }
+    for(; c1[j] != 0 && c2[i] != 0; i++, j++){
+        if(c1[j] != c2[i]){
+            return c1[j] - c2[i];
         }
     }
-    if (c1[i])
+    while(c1[j] == ' ' && c1[j] != 0){
+        j++;
+    }
+    if (c1[j])
     {
         return 1;
     }
@@ -123,13 +139,15 @@ int shell(){
             print(text);
         }
     }
-    newLine();
 	buffer[n-1] = 0;
     int flag = startFunction(buffer);
+    newLine();
     if(!flag){
         print("no existe pa");
         newLine();
+        newLine();
     }
+    
     n = 0;
     buffer[0] = 0;
     return 1;
