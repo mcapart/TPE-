@@ -20,7 +20,7 @@ void sys_currentHour(uint64_t * value);
 void sys_currentMin(uint64_t * value);
 void sys_currentSec(uint64_t * value);
 void sys_cpuInfo(char * vendor, uint32_t * version); //rax = 10 => syscall cpuInfo
-void sys_getTemperature(uint64_t * temp); // rax = 11 => syscall temperature
+void sys_getTemperature(uint64_t * targetTemp, uint64_t * statusTemp ); // rax = 11 => syscall temperature
 
 void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
     switch(rax){
@@ -44,7 +44,7 @@ void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
                 break;
         case 10: sys_cpuInfo((char *) rdi, (uint32_t *) rsi);
                 break;
-        case 11: sys_getTemperature((uint64_t *) rdi);
+        case 11: sys_getTemperature((uint64_t *) rdi, (uint64_t *) rsi);
     }
 }
 
@@ -90,6 +90,6 @@ void sys_cpuInfo(char * vendor , uint32_t * version){
     cpuVersion(version);
 }
 
-void sys_getTemperature(uint64_t * temp){
-    getTemperature(temp);
+void sys_getTemperature(uint64_t * targetTemp, uint64_t * statusTemp){
+    getTemperature(targetTemp, statusTemp);
 }

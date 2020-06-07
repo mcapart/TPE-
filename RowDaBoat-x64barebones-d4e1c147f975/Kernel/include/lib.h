@@ -10,6 +10,6 @@ char *cpuVendor(char *result);
 
 void cpuVersion(uint32_t * result);
 
-void getTemperature(uint64_t * result);
+void getTemperature(uint64_t * targetTemp, uint64_t * statusTemp);
 
 #endif

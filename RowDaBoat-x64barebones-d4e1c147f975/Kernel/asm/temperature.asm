@@ -16,6 +16,12 @@ getTemperature:
     mov [rdi] , edx
     mov [rdi + 4] , eax
 
+    mov ecx, 412
+    RDMSR
+
+    mov [rsi], edx
+    mov [rsi + 4] , eax
+
     pop rax
     pop rdx
     pop rcx

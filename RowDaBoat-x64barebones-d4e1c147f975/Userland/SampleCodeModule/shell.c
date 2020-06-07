@@ -106,11 +106,14 @@ int getFunction(char * c){
 }
 
 static void getCpuTemp(){
-    uint64_t temp;
-    getTemp(&temp);
-    temp = ((temp >> 16) & 0x7f );
+    uint64_t targetTemp;
+    uint64_t statusTemp;
+    getTemp(&targetTemp, &statusTemp);
+    targetTemp = ((targetTemp >> 16) & 0xff );
+    statusTemp = ((statusTemp >> 16) & 0x7f );
     char text[70];
-    numToChar(temp, text);
+    targetTemp = targetTemp - statusTemp;
+    numToChar(targetTemp, text);
     print(text);
     return;
 }
