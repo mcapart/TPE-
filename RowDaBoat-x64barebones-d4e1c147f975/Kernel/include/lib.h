@@ -12,4 +12,8 @@ void cpuVersion(uint32_t * result);
 
 void getTemperature(uint64_t * targetTemp, uint64_t * statusTemp);
 
+void saveReg();
+
+void getReg(uint64_t * v);
+
 #endif

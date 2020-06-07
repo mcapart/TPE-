@@ -97,6 +97,9 @@ void keyboard_handler(){
                     buffer[actBuffer] = -2;
                     actBuffer++;  
                 }
+                else if(control == 1 && scanCode == 3){
+                    saveReg();
+                }
                 else{
                     if (pressCodes[scanCode][0])
                     {

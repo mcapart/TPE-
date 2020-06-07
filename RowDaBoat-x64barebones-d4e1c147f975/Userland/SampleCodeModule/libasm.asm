@@ -9,7 +9,9 @@ GLOBAL getMin
 GLOBAL getSec
 GLOBAL getCpuVendor
 GLOBAL getTemp
-
+GLOBAL saveReg
+GLOBAL getReg
+GLOBAL actReg
 section .text
 
 ; void print(char *)
@@ -139,6 +141,52 @@ getTemp:
 
     mov rax, 11
     int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+saveReg:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 12
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+getReg:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 13
+    int 80h
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+actReg:
+    push rbp
+    mov rbp, rsp
+
+    mov rbx, 2
+    mov rcx, 3
+    mov rdx, 4
+
+    mov rdi, 5
+    mov rsi, 6
+    mov r8, 7
+    mov r9, 8
+    mov r10, 9
+    mov r11, 10
+	mov r12, 11
+	mov r13, 12
+	mov r14, 13
+	mov r15, 14
+    mov rax, 1
 
     mov rsp, rbp
     pop rbp

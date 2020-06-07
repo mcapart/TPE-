@@ -28,4 +28,10 @@ void getCpuVendor(char * c, uint32_t * v);
 
 void getTemp(uint64_t * targetTemp, uint64_t * statusTemp);
 
+void saveReg();
+
+void getReg(uint64_t * v);
+
+void actReg();
+
 #endif
