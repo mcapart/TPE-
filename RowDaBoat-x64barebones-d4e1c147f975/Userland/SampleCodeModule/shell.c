@@ -1,9 +1,9 @@
 #include <lib.h>
 #include <stdint.h>
 #include <shell.h>
-#define CANT_FUNC 2
+#define CANT_FUNC 3
 
-char fun[CANT_FUNC][20] = {"get time","get cpu info"};
+char fun[CANT_FUNC][40] = {"get time","get cpu info", "get cpu temperature"};
 static char buffer[70] = {0};
 static int n = 0;
 
@@ -105,6 +105,16 @@ int getFunction(char * c){
     return -1;
 }
 
+static void getCpuTemp(){
+    uint64_t temp;
+    getTemp(&temp);
+    temp = ((temp >> 16) & 0x7f );
+    char text[70];
+    numToChar(temp, text);
+    print(text);
+    return;
+}
+
 int startFunction(char * c){
     int i = getFunction(c);
     switch (i)
@@ -113,10 +123,13 @@ int startFunction(char * c){
             return 1;
     case 1: cpuInfo();
             return 1;
+    case 2: getCpuTemp();
+            return 1;
     default:
         return 0;
     }
 }
+
 
 
 int shell(){

@@ -26,4 +26,6 @@ void getSec(uint64_t * v);
 
 void getCpuVendor(char * c, uint32_t * v);
 
+void getTemp(uint64_t * temp);
+
 #endif

@@ -8,6 +8,8 @@ GLOBAL getHour
 GLOBAL getMin
 GLOBAL getSec
 GLOBAL getCpuVendor
+GLOBAL getTemp
+
 section .text
 
 ; void print(char *)
@@ -125,6 +127,17 @@ getCpuVendor:
     mov rbp, rsp
 
     mov rax, 10
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+getTemp:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 11
     int 80h
 
     mov rsp, rbp
