@@ -32,6 +32,6 @@ void saveReg();
 
 void getReg(uint64_t * v);
 
-void actReg();
+void getMem(uint8_t * mem, uint8_t * v);
 
 #endif

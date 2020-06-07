@@ -131,25 +131,44 @@ static void inforeg(){
     }
 }
 
-int startFunction(char * c){
+static void printMem(uint8_t * mem){
+    uint8_t vec[32];
+    getMem(mem, vec);
+    char text[70];
+    for(int i=0;i<32;i++){
+        if(i!=0 && i%4==0){
+            newLine();
+        }
+        numToChar(vec[i], text);
+        print(text);
+        print("    ");
+    }
+}
+
+int startFunction(char * c){ 
     int i = getFunction(c);
      
-    switch (i)
-    {
-    case 0: printTime();
-            return 1;
-    case 1: cpuInfo();
-            return 1;
-    case 2: getCpuTemp();
-            return 1;
-    case 3: inforeg();
-            return 1;
-    default:
-        if(i==3){
-            print("found ");
-        } 
-        return 0;
+
+    if(i == 0){ 
+        printTime();
+        return 1;
     }
+    if(i == 1) {
+        cpuInfo();
+        return 1;
+    }
+    if(i == 2) {
+        getCpuTemp();
+        return 1;
+    }
+    if(i == 3) {
+        inforeg();
+        return 1;
+    }
+  
+
+    return 0;
+    
 }
 
 
@@ -180,6 +199,7 @@ int shell(){
     if(!flag){
         print("no existe pa");
         newLine();
+        printMem(1222);
         newLine();
     }
     
