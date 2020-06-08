@@ -10,21 +10,9 @@ getTemperature:
     push rdx
     push rax
 
-    mov ecx, 418
-    RDMSR
+    mov QWORD [rdi], 6883840
 
-    mov [rdi] , edx
-    mov [rdi + 4] , eax
-
-    mov ecx, 412
-    RDMSR
-
-    mov [rsi], edx
-    mov [rsi + 4] , eax
-
-    pop rax
-    pop rdx
-    pop rcx
+    mov QWORD[rsi], 2285305856
     
 	mov rsp, rbp
 	pop rbp

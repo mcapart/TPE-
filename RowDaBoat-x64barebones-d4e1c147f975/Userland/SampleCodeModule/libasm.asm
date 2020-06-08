@@ -12,6 +12,10 @@ GLOBAL getTemp
 GLOBAL saveReg
 GLOBAL getReg
 GLOBAL getMem
+GLOBAL saveReturn
+GLOBAL tryInvalidOpcode
+EXTERN shell
+
 section .text
 
 ; void print(char *)
@@ -43,15 +47,17 @@ getChar:
 
 ;void changeApp();
 changeApp:
-    push rbp
-    mov rbp, rsp
+   push rbp
+   mov rbp, rsp
 
-    mov rax, 3  
-    int 80h
+   mov rax, 3
+   int 80h
 
-    mov rsp, rbp
-    pop rbp
+   mov rsp, rbp
+   pop rbp
+
     ret
+
 ;void start();
 start:
     push rbp
@@ -178,3 +184,35 @@ getMem:
     mov rsp, rbp
     pop rbp
     ret
+
+saveReturn:
+    push rbp
+    mov rsi, rbp
+    mov rbp, rsp
+    
+    mov rdx, rdi
+    mov rax, 15
+    mov rdi, [rbp + 8]
+    int 80h
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+tryInvalidOpcode:
+    push rbp
+    mov rbp, rsp
+
+    ud2
+
+    mov rsp, rbp
+    pop rbp
+
+section .data
+text db "estoy"
+
+section .bss
+RSPAux resq 1
+RIPAux resq 1
+RBPAux resq 1
+flag resb 1

@@ -1,9 +1,9 @@
 #include <lib.h>
 #include <stdint.h>
 #include <shell.h>
-#define CANT_FUNC 4
+#define CANT_FUNC 7
 
-char fun[CANT_FUNC][40] = {"get time","get cpu info", "get cpu temperature", "inforeg"};
+char fun[CANT_FUNC][40] = {"get time","get cpu info", "get cpu temperature", "inforeg", "try divide", "try invalid opcode", "printMem"};
 static char buffer[70] = {0};
 static int n = 0;
 
@@ -95,8 +95,50 @@ int strComp(char * c1, char * c2){
     return 0;
 }
 
+int valid(char d){
+    return (d >= '0' && d <= '9') || (d>= 'a' && d <= 'f');
+}
+
+int specialStrComp(char * c1, char * c2, char * arg){
+    int i = 0;
+    int j = 0;
+    int n = 0;
+    while(c1[j] == ' ' && c1[j] != 0){
+            j++;
+    }
+    for(; c1[j] != 0 && c2[i] != 0; i++, j++){
+        if(c1[j] != c2[i]){
+            return c1[j] - c2[i];
+        }
+    }
+    if (c2[i])
+    {
+        return -1;
+    }
+    while(c1[j] == ' ' && c1[j] != 0){
+        j++;
+    }
+    if(!valid(c1[j])){
+        return 1;
+    }
+    while(valid(c1[j])){
+        arg[n] = c1[j];
+        j++;
+        n++;
+    }
+    while(c1[j] == ' ' && c1[j] != 0){
+        j++;
+    }
+    if (c1[j])
+    {
+        return 1;
+    }
+    arg[n] = 0;
+    return 0;
+}
+
 int getFunction(char * c){
-    for(int i = 0; i < CANT_FUNC; i++){
+    for(int i = 0; i < CANT_FUNC - 1; i++){
         if(strComp(c,fun[i]) == 0){
             newLine();
             return i;
@@ -132,21 +174,45 @@ static void inforeg(){
 }
 
 static void printMem(uint8_t * mem){
-    uint8_t vec[32];
+    uint8_t vec[32] = {0};
     getMem(mem, vec);
     char text[70];
     for(int i=0;i<32;i++){
         if(i!=0 && i%4==0){
             newLine();
         }
-        numToChar(vec[i], text);
+        numToCharHex(vec[i], text);
         print(text);
-        print("    ");
-    }
+        print("  ");
+    } 
+    newLine();
 }
+
+static void tryDivide(){
+    print("intento dividir por 0");
+    newLine();
+    int i = 1 / 0;
+}
+
+static void tryInvalidOpcodes(){
+    print("intento un codigo de operacion invalido");
+    newLine();
+    tryInvalidOpcode();
+}
+
+
 
 int startFunction(char * c){ 
     int i = getFunction(c);
+    char * arg[20];
+    if(specialStrComp(c, fun[CANT_FUNC-1], arg) == 0){
+        newLine();
+        uint8_t num;
+        charToNumHex(arg, &num);
+        printMem(num);
+        return 1;
+        
+    }
      
 
     if(i == 0){ 
@@ -165,7 +231,14 @@ int startFunction(char * c){
         inforeg();
         return 1;
     }
-  
+    if(i==4){
+        tryDivide();
+        return 1;
+    }
+    if(i==5){
+        tryInvalidOpcodes();
+        return 1;
+    }
 
     return 0;
     
@@ -174,6 +247,9 @@ int startFunction(char * c){
 
 
 int shell(){
+
+    //saveReturn(1);
+
     char text[10] = {0};
     while(text[0]!= 10 && n < 70){
         getChar(text);
@@ -183,7 +259,7 @@ int shell(){
             deleteChar();
         }
         else if(text[0] == -2){
-            changeApp();
+            changeApp(0);
             return 0;
         }
         else
@@ -193,19 +269,25 @@ int shell(){
             print(text);
         }
     }
-	buffer[n-1] = 0;
+    buffer[n-1] = 0;
     int flag = startFunction(buffer);
     newLine();
     if(!flag){
         print("no existe pa");
         newLine();
-        printMem(1222);
         newLine();
+        
     }
-    
     n = 0;
     buffer[0] = 0;
     text[0] = 0;
-    return 1;
+
+
+   return 1;
+    
 }
 
+void reStartShell(){
+    buffer[n] = 0;
+    n = 0;
+}

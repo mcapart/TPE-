@@ -20,4 +20,6 @@ void saveMemory(uint8_t * mem);
 
 void getMemory(uint8_t * v);
 
+void numToChar(double v, char * text);
+
 #endif

@@ -5,6 +5,10 @@ GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
 GLOBAL _hlt
+GLOBAL setApp
+GLOBAL setRegCalc
+GLOBAL setRegShell
+GLOBAL getErrorRIP
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -14,7 +18,9 @@ GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 GLOBAL int_80h
 
+
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -76,7 +82,21 @@ SECTION .text
 
 
 %macro exceptionHandler 1
-	pushState
+	mov rax, [rsp]
+	mov [errorRIP], rax
+	cmp byte [app], 0
+	jne .other
+	mov rax, [ripCalc]
+	mov QWORD [rsp], rax
+	mov rax, [rbpCalc]
+	mov QWORD [rsp + 24], rax
+	jmp .continue
+.other: mov rax, [ripShell]
+	mov QWORD [rsp], rax
+	mov rax, [rbpShell]
+	mov QWORD [rsp + 24], rax
+
+.continue:	pushState
 
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
@@ -163,12 +183,61 @@ _irq06Handler:
 _exception0Handler:
 	exceptionHandler 0
 
+;Invalid Opcode Exception
+_exception6Handler:
+	exceptionHandler 6
+
 haltcpu:
 	cli
 	hlt
 	ret
 
+setRegCalc:
+	push rbp
+	mov rbp, rsp
 
+	mov QWORD [ripCalc], rdi
+	mov QWORD [rbpCalc], rsi
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+setRegShell:
+	push rbp
+	mov rbp, rsp
+
+	mov QWORD [ripShell], rdi
+	mov QWORD [rbpShell], rsi
+
+	mov rsp, rbp
+	pop rbp
+	ret
+setApp:
+	push rbp
+	mov rbp, rsp
+
+	mov QWORD [app], rdi
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+getErrorRIP:
+	push rbp
+	mov rbp, rsp
+
+	mov rax, [errorRIP]
+
+	mov rsp, rbp
+	pop rbp
+	ret
 
 SECTION .bss
 	aux resq 1
+	ripCalc resq 1
+	rbpCalc resq 1
+	ripShell resq 1
+	rbpShell resq 1
+	app resb 1
+	errorRIP resq 1

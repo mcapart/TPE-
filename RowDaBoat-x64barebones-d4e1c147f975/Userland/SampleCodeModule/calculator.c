@@ -211,10 +211,13 @@ static int evaluator(char * c){
 
 static char buffer[70] = {0};
 static int n = 0;
+
+
 int calculator(){
 
-	char text[10] = {0};
-	
+
+    char text[10] = {0};
+    
     while(text[0]!= '='){
         getChar(text);
         if(text[0] == 8 && n > 0){
@@ -223,18 +226,19 @@ int calculator(){
             deleteChar();
         }
         else if(text[0] == -2){
-            changeApp();
-            
+            changeApp(1);
             return 1;
         }
         
-        else if(is_number(text[0]) || numOp(text[0]) != -1 || text[0] == ' ' || text[0] == '=')
+        else if(is_number(text[0]) || numOp(text[0]) != -1 || text[0] == ' ' || text[0] == '=' || text[0] == '.')
         {
             buffer[n] = text[0];
             n++;
             print(text);
         }
+        
     }
+    
     double v = evaluator(buffer) / 1000000.0;
     char t[40];
     numToChar(v, t);
@@ -246,9 +250,10 @@ int calculator(){
     newLine();
     return 0;
     
+   
 }
 
-static void reStart(){
+void reStartCalculator(){
     buffer[n] = 0;
     n = 0;
 }

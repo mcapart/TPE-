@@ -3,5 +3,7 @@
 
 int calculator();
 
+void reStartCalculator();
+
 
 #endif

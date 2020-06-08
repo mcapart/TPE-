@@ -3,4 +3,6 @@
 
 int shell();
 
+void reStartShell();
+
 #endif

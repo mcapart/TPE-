@@ -5,15 +5,22 @@
 
 char * v = (char*)0xB8000 + 79 * 2;
 
-
+static int app = 0;
 int main() {
 	
-
 	start();
-	int app = 0; 
+	initApp(app);
+	saveReturn(1);
+	saveReturn(0);
+	if(app == 0){
+		reStartCalculator();
+	}
+	if(app == 1){
+		reStartShell();
+	}
 	
+
 	while(1){
-		
 		switch (app)
 		{
 		case 0 : app = calculator();
@@ -24,14 +31,9 @@ int main() {
 			break;
 		}
 		
-		
-		
 	}
-
 	return 0;
 
-	
-	
 
 
 }
