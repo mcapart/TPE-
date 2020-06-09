@@ -126,6 +126,9 @@ static int specialStrComp(char * c1, char * c2, char * arg){
     {
         return -1;
     }
+    if(c1[j] != ' '){
+        return 1;
+    }
     while(c1[j] == ' ' && c1[j] != 0){
         j++;
     }
@@ -290,7 +293,7 @@ int shell(){
     int flag = startFunction(buffer);
     newLine();
     if(!flag){
-        print("no existe pa");
+        print("Comando Invalido");
         newLine();
         newLine();
         
