@@ -173,16 +173,16 @@ char font8x8_basic[128][8] = {
 struct vbe_mode_info_structure * screen_info = 0x5C00;
 
 int MAXWIDTH = 1024;
-int start = 0;
-int startAux = 1024/2 + 2;
-int width = 1024/2-1;
-int widthAux = 1024;
+int startAux = 0;
+int start = 1024/2 + 2;
+int widthAux = 1024/2-1;
+int width = 1024;
 int HEIGHT = 768;
-static int actX = 0;
+static int actXaux = 0;
 static int actY= 765-8*1.5;
 static int endX = 504;
 static int endXaux = 1018;
-static int actXaux=1024/2 + 2;
+static int actX=1024/2 + 2;
 static int actYaux= 765-8*1.5 ;
 static double getMaxY = 0;
 static double currentSize;
