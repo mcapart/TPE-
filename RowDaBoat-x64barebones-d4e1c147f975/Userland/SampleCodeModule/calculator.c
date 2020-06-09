@@ -42,14 +42,21 @@ static int getPrecendence(char tope,char current){
     return precedenceMatriz[topeIndex][currentIndex];
 }
 
-static int operate(double num1, double num2, char operator){
+static int operate(double num1, double num2, char operator, int * flag){
     double resp;
     switch (operator){
         case '+':resp = num1 + num2;break;
         case '-':resp = num1 - num2;break;
-        case '/':resp = num1 / num2;break;
+        case '/':
+            if(num2 != 0){
+                resp = num1 / num2;break;
+            }
+            newLine();
+            print("No se puede dividir por 0");
+            flag[0] = 0;
+            break;
         case '*':resp = num1 * num2;break;
-        default: break;//cambiar
+        default: break;
     }
     return (int) (resp * CANT_DECIMALES); 
 }
@@ -67,9 +74,6 @@ static int numChar(char * c, int entero, int decimal){
     int i = 0;
     for(; i < entero; i++)
     {
-        if(!is_number(c[i])){
-            return -1;//cambiar
-        }
         resp += c[i] - '0';
         resp = resp * 10;
     }
@@ -77,16 +81,13 @@ static int numChar(char * c, int entero, int decimal){
     resp = resp / 10;
 
     for(double aux = 10; i- entero < decimal && i < entero + 6; i++){
-        if(!is_number(c[i])){
-            return -2;//cambiar
-        }
         resp = resp + (c[i] - '0') / aux;
         aux = aux * 10;
     }
     return (int) (resp * CANT_DECIMALES); 
 }
 
-static int evaluator(char * c){
+static int evaluator(char * c, int * flag){
     char op[100]= {0};
     int itOp = 0;
     double num[100]= {0};
@@ -125,7 +126,10 @@ static int evaluator(char * c){
                     punto = 1;
                 }
                 else{
-                    return -3;//cambiar
+                    newLine();
+                    print("No es un numero en base 10");
+                    flag[0] = 0;
+                    return 0;
                 }
                 i++;
             }
@@ -146,7 +150,10 @@ static int evaluator(char * c){
         }
         else if(numOp(c[i]) != -1){
             if(c[i+1] != ' '){
-                return -4; //cambiar
+                newLine();
+                print("Los operadores se separan con espacios");
+                flag[0] = 0;
+                return 0;
             }
             if(itOp == 0){
                 op[itOp] = c[i];
@@ -156,16 +163,25 @@ static int evaluator(char * c){
             {
                 while(itOp != 0 && getPrecendence(op[itOp-1], c[i])){
                     if(itNum < 2){
-                        return -5; //cambiar
+                        newLine();
+                        print("No es una expresion valida (demasiados operadores para la cantidad de numeros)");
+                        flag[0] = 0;
+                        return 0;
                     }
-                    double resp = (double) operate(num[itNum-2],num[itNum-1],op[itOp-1]) / CANT_DECIMALES;
+                    double resp = (double) operate(num[itNum-2],num[itNum-1],op[itOp-1], flag) / CANT_DECIMALES;
+                    if(flag[0] == 0){
+                        return 0;
+                    }
                     num[itNum-2] = resp;
                     itOp--;
                     itNum--;
                 }
                 if(c[i] == ')'){
                     if(itOp == 0 || op[itOp-1] != '('){
-                        return -6;//cambiar
+                        newLine();
+                        print("Los parentesis no estan apariados");
+                        flag[0] = 0;
+                        return 0;
                     }
                     itOp--;
                 }
@@ -180,7 +196,10 @@ static int evaluator(char * c){
             i--;
         }
         else{
-            return -7;//cambiar
+            newLine();
+            print("No es una expresion valida");
+            flag[0] = 0;
+            return 0;
         }
        
       
@@ -188,18 +207,30 @@ static int evaluator(char * c){
    
     while(itOp > 0){
         if(op[itOp-1] == '('){
-            return -8;//cambiar
+            newLine();
+            print("Los parentesis no estan apariados");
+            flag[0] = 0;
+            return 0;
         }
          if(itNum < 2){
-            return -9; //cambiar
+            newLine();
+            print("No es una expresion valida (demasiados operadores para la cantidad de numeros)");
+            flag[0] = 0;
+            return 0;
         }
-        double resp = (double) operate(num[itNum-2],num[itNum-1],op[itOp-1]) / CANT_DECIMALES;
+        double resp = (double) operate(num[itNum-2],num[itNum-1],op[itOp-1], flag) / CANT_DECIMALES;
+        if(flag[0] == 0){
+            return 0;
+        }
         num[itNum-2] = resp;
         itOp--;
         itNum--;
     }
     if(itNum > 1){
-        return -10; //cambiar
+            newLine();
+            print("No es una expresion valida (demasiados numeros para la cantidad de operadores)");
+            flag[0] = 0;
+            return 0;
     }
 
    
@@ -229,7 +260,10 @@ int calculator(){
             changeApp(1);
             return 1;
         }
-        
+        else if(text[0] == -3){
+            deleteAll(n);
+            n = 0;
+        }
         else if(is_number(text[0]) || numOp(text[0]) != -1 || text[0] == ' ' || text[0] == '=' || text[0] == '.')
         {
             buffer[n] = text[0];
@@ -238,13 +272,14 @@ int calculator(){
         }
         
     }
-    
-    double v = evaluator(buffer) / 1000000.0;
-    char t[40];
-    numToChar(v, t);
-    //print(buffer);
-    print(" ");
-    print(t);
+    int flag = 1;
+    double v = evaluator(buffer, &flag) / 1000000.0;
+    if(flag){
+        char t[40];
+        numToChar(v, t);
+        print(" ");
+        print(t);
+    }
     buffer[n] = 0;
     n = 0;
     newLine();

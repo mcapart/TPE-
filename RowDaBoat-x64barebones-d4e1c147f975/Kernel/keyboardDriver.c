@@ -65,7 +65,6 @@ void keyboard_handler(){
                 break;
 
             case ENTER:
-                //ncNewline();
                 buffer[actBuffer] = 10;
                 actBuffer++;
                 break;
@@ -75,15 +74,12 @@ void keyboard_handler(){
                 break;
 
             case SPACE:
-               // ncPrintChar(' ');
 
                 buffer[actBuffer] = ' ';
                 actBuffer++;
                 break;
 
             case B_SPACE:
-               // deletechar()
-               // writeChar('b', 1.5, color);
                 buffer[actBuffer] = 8;
                 actBuffer ++;
                 break;
@@ -100,12 +96,17 @@ void keyboard_handler(){
                 else if(control == 1 && scanCode == 3){
                     saveReg();
                 }
+                else if(control == 1 && scanCode == 4)
+                {
+                    buffer[actBuffer] = -3;
+                    actBuffer++;
+                }
+                
                 else{
                     if (pressCodes[scanCode][0])
                     {
                         if (!IS_LETTER(pressCodes[scanCode][0]))
-                        {// ncPrintChar(pressCodes[scanCode][specialChars[0] | specialChars[1]]);
-            
+                        {
                         buffer[actBuffer] = (pressCodes[scanCode][specialChars[0] | specialChars[1]]);
                     
                         actBuffer++;
@@ -114,7 +115,6 @@ void keyboard_handler(){
                         }
                         else
                         {
-                            //ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
                         buffer[actBuffer] = (pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
                         actBuffer++;
                         }
@@ -143,59 +143,6 @@ void keyboard_handler(){
     }
 }
 
-/*void poolingKeyboard()
-{
-    uint8_t scanCode, currentAction, specialChars[] = {0, 0}, capsLock=0;
-    while (1)
-    {
-        if (hasKey())
-        {
-            scanCode = getKey();
-            currentAction = action(scanCode);
-            if (currentAction == PRESSED)
-            {
-                switch (scanCode)
-                {
-                case L_SHFT:
-                    specialChars[0] = 1;
-                    break;
-
-                case R_SHFT:
-                    specialChars[1] = 1;
-                    break;
-                case CAPS_LCK:
-                    capsLock = capsLock == 1 ? 0 : 1;
-                    break;
-                case SPACE:
-                    ncPrintChar(' ');
-                    break;
-                default:
-                    if(pressCodes[scanCode][0]){
-                        if (!isLetter(pressCodes[scanCode][0]))
-                            ncPrintChar(pressCodes[scanCode][specialChars[0]|specialChars[1]]);
-                        else{
-                            ncPrintChar(pressCodes[scanCode][ABS(capsLock - (specialChars[0] | specialChars[1]))]);
-                        }
-                    }
-                }
-            }
-            else if (currentAction == RELEASED)
-            {
-                switch (scanCode)
-                {
-                case L_SHFT | 0x80:
-                    specialChars[0] = 0;
-                    break;
-
-                case R_SHFT | 0x80:
-                    specialChars[1] = 0;
-                    break;
-                }
-            }
-        }
-    }
-}
-*/
 static uint8_t action(uint8_t scanCode)
 {
     if (scanCode >= 0x01 && scanCode <= 0x3A)

@@ -14,7 +14,6 @@ GLOBAL getReg
 GLOBAL getMem
 GLOBAL saveReturn
 GLOBAL tryInvalidOpcode
-EXTERN shell
 
 section .text
 
@@ -208,11 +207,4 @@ tryInvalidOpcode:
     mov rsp, rbp
     pop rbp
 
-section .data
-text db "estoy"
 
-section .bss
-RSPAux resq 1
-RIPAux resq 1
-RBPAux resq 1
-flag resb 1

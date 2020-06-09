@@ -180,6 +180,8 @@ int widthAux = 1024;
 int HEIGHT = 768;
 static int actX = 0;
 static int actY= 765-8*1.5;
+static int endX = 504;
+static int endXaux = 1018;
 static int actXaux=1024/2 + 2;
 static int actYaux= 765-8*1.5 ;
 static double getMaxY = 0;
@@ -215,13 +217,16 @@ void changeScreen(){
     aux2 = getMaxYaux;
     getMaxYaux = getMaxY;
     getMaxY = aux2;
+    aux = endXaux;
+    endXaux = endX;
+    endX = aux;
 }
 
 char * getPixelDataByPosition(int x, int y){
     return screen_info->framebuffer + (x + y * MAXWIDTH)*3;
 }
 
-int writePixel(int x, int y, double size, int color[3]){
+void writePixel(int x, int y, double size, int color[3]){
 	for(int i = 0; i < size; i++){
 		for(int j = 0; j < size; j++){
     		char * pos = getPixelDataByPosition(x + i, y + j);
@@ -236,7 +241,6 @@ void writeChar(char c, double size, int color[3]){
     currentSize = size;
     	if((actX + 8 * size) > width){
 			actX = start;
-			//actY += 8 * getMaxY;
             if(actY == 765-8*size){
                  scroll(size);
             }
@@ -273,7 +277,6 @@ void writeChar(char c, double size, int color[3]){
 }
 
 void newLine(){
-    //actY += getMaxY * 8;
     if(actY == 765-8*currentSize){
         scroll(currentSize);
     }
@@ -294,14 +297,13 @@ void clear(){
 		}
 	}
     actX = start;
-    //actY = 0;
     getMaxY = 0;
     screenLine();
 }
 
 void deleteChar(){
     if(actX == start){
-        actX = 504;
+        actX = endX;
         actY -= 8*currentSize;
     }
     for(int i = actX; i >= actX-8*currentSize && i >= start; i--){

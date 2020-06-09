@@ -1,11 +1,22 @@
 #include <lib.h>
 #include <stdint.h>
 #include <shell.h>
-#define CANT_FUNC 7
+#define CANT_FUNC 8
 
-char fun[CANT_FUNC][40] = {"get time","get cpu info", "get cpu temperature", "inforeg", "try divide", "try invalid opcode", "printMem"};
+char fun[CANT_FUNC][40] = {"get time","get cpu info", "get cpu temperature", "inforeg", "try divide", "try invalid opcode", "help", "printMem"};
+char descFun[CANT_FUNC][100] = {": Imprime la hora actual del sistema", ": Imprime informacion del cpu", ": Imprime la temperatura del cpu", ": Imprime el contenido de los registros cuando fueron guardados", ": ejemplo de excepcion de dividir por 0", ": ejemplo de excepcion de codigo invalido", ": Imprime las funciones disponibles y su descripcion", ": Volcado de memoria desde la posicion pasada como argumento"};
 static char buffer[70] = {0};
 static int n = 0;
+
+static void help(){
+    newLine();
+    for(int i = 0; i < CANT_FUNC; i++){
+        print(fun[i]);
+        print(descFun[i]);
+        newLine();
+        newLine();
+    }
+}
 
 static void printTime(){
     uint64_t h;
@@ -70,7 +81,7 @@ static void cpuInfo(){
     newLine();
 }
 
-int strComp(char * c1, char * c2){
+static int strComp(char * c1, char * c2){
     int i = 0;
     int j = 0;
     while(c1[j] == ' ' && c1[j] != 0){
@@ -95,11 +106,11 @@ int strComp(char * c1, char * c2){
     return 0;
 }
 
-int valid(char d){
+static int valid(char d){
     return (d >= '0' && d <= '9') || (d>= 'a' && d <= 'f');
 }
 
-int specialStrComp(char * c1, char * c2, char * arg){
+static int specialStrComp(char * c1, char * c2, char * arg){
     int i = 0;
     int j = 0;
     int n = 0;
@@ -137,7 +148,7 @@ int specialStrComp(char * c1, char * c2, char * arg){
     return 0;
 }
 
-int getFunction(char * c){
+static int getFunction(char * c){
     for(int i = 0; i < CANT_FUNC - 1; i++){
         if(strComp(c,fun[i]) == 0){
             newLine();
@@ -157,6 +168,7 @@ static void getCpuTemp(){
     targetTemp = targetTemp - statusTemp;
     numToChar(targetTemp, text);
     print(text);
+    newLine();
     return;
 }
 
@@ -173,7 +185,7 @@ static void inforeg(){
     }
 }
 
-static void printMem(uint8_t * mem){
+static void printMem(uint8_t mem){
     uint8_t vec[32] = {0};
     getMem(mem, vec);
     char text[70];
@@ -202,9 +214,9 @@ static void tryInvalidOpcodes(){
 
 
 
-int startFunction(char * c){ 
+static int startFunction(char * c){ 
     int i = getFunction(c);
-    char * arg[20];
+    char arg[20];
     if(specialStrComp(c, fun[CANT_FUNC-1], arg) == 0){
         newLine();
         uint8_t num;
@@ -239,6 +251,10 @@ int startFunction(char * c){
         tryInvalidOpcodes();
         return 1;
     }
+    if(i == 6){
+        help();
+        return 1;
+    }
 
     return 0;
     
@@ -247,9 +263,6 @@ int startFunction(char * c){
 
 
 int shell(){
-
-    //saveReturn(1);
-
     char text[10] = {0};
     while(text[0]!= 10 && n < 70){
         getChar(text);
@@ -262,7 +275,11 @@ int shell(){
             changeApp(0);
             return 0;
         }
-        else
+       else if(text[0] == -3){
+            deleteAll(n);
+            n = 0;
+        }
+        else if(text[0] != 8)
         {
             buffer[n] = text[0];
             n++;

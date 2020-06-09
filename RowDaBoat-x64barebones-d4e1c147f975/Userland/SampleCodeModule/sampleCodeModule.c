@@ -9,16 +9,9 @@ static int app = 0;
 int main() {
 	
 	start();
-	initApp(app);
 	saveReturn(1);
 	saveReturn(0);
-	if(app == 0){
-		reStartCalculator();
-	}
-	if(app == 1){
-		reStartShell();
-	}
-	
+	initApp(app);
 
 	while(1){
 		switch (app)

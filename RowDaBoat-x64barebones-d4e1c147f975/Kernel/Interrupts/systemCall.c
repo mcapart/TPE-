@@ -26,7 +26,7 @@ void sys_cpuInfo(char * vendor, uint32_t * version); //rax = 10 => syscall cpuIn
 void sys_getTemperature(uint64_t * targetTemp, uint64_t * statusTemp ); // rax = 11 => syscall temperature
 void sys_saveReg(); 
 void sys_getReg(uint64_t * v);
-void sys_getMem(uint8_t * mem, uint8_t * v);
+void sys_getMem(uint8_t mem, uint8_t * v);
 void sys_saveReturn(uint64_t rip, uint64_t rbp, int app);
 
 void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
@@ -57,7 +57,7 @@ void systemCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax){
                 break;
         case 13: sys_getReg((uint64_t *) rdi);
                 break;
-        case 14: sys_getMem((uint8_t *) rdi, (uint8_t *) rsi);
+        case 14: sys_getMem((uint8_t) rdi, (uint8_t *) rsi);
                 break;
         case 15: sys_saveReturn(rdi, rsi, rdx);
                 break;
@@ -120,7 +120,7 @@ void sys_getReg(uint64_t * v){
   getReg(v);
 }
 
-void sys_getMem(uint8_t * mem, uint8_t * v){
+void sys_getMem(uint8_t mem, uint8_t * v){
     saveMemory(mem);
     getMemory(v);
 }

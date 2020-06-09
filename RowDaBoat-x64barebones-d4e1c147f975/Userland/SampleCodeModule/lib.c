@@ -101,3 +101,10 @@ int charToNumHex(char * d, uint8_t * num ){
     *num = resp;
     return 1;
 }
+
+void deleteAll(int n){
+    while(n > 0){
+        deleteChar();
+        n--;
+    }
+}

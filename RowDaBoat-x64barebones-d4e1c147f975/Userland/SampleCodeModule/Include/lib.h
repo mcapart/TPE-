@@ -32,7 +32,7 @@ void saveReg();
 
 void getReg(uint64_t * v);
 
-void getMem(uint8_t * mem, uint8_t * v);
+void getMem(uint8_t mem, uint8_t * v);
 
 void initApp(int app);
 
@@ -47,5 +47,7 @@ void tryInvalidOpcode();
 int charToNumHex(char * d, uint8_t * num );
 
 void numToCharHex(uint8_t num, char * c);
+
+void deleteAll(int n);
 
 #endif
