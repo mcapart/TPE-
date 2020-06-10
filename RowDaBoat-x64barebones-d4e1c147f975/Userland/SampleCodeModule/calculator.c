@@ -249,7 +249,7 @@ int calculator(){
 
     char text[10] = {0};
     
-    while(text[0]!= '='){
+    while(text[0]!= '=' && n < 70){
         getChar(text);
         if(text[0] == 8 && n > 0){
             n--;
@@ -271,6 +271,10 @@ int calculator(){
             print(text);
         }
         
+    }
+    if(n == 70){
+        buffer[n-1] = '=';
+        print("=");
     }
     int flag = 1;
     double v = evaluator(buffer, &flag) / 1000000.0;
